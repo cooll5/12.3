@@ -1,0 +1,139 @@
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <iomanip>
+#include <fstream>
+using namespace std;
+struct Node
+{
+    Node* next;
+    Node* prev;
+    int data;
+    Node(int _data)
+    {
+        data = _data;
+    }
+    Node(int data, Node* pNext = nullptr, Node* pPrev = nullptr)
+    {
+        this->data = data;
+        this->next = pNext;
+        this->prev = pPrev;
+    }
+};
+struct List
+{
+private:
+    Node* head;
+    Node* tail;
+    int count;
+public:
+
+    List()
+    {
+        count = 0;
+        head = nullptr;
+        tail = nullptr;
+    }
+    Node* gethead()
+    {
+        return head;
+    }
+    void push_back(int data)
+    {
+        if (count > 1)
+        {
+            Node* temp = tail;
+            tail = new Node(data, nullptr, tail);
+            temp->next = tail;
+        }
+        else if (count == 1)
+        {
+            tail = new Node(data, nullptr, tail);
+            head->next = this->tail;
+        }
+        else
+        {
+            head = tail = new Node(data, head, tail);
+        }
+        count++;
+    }
+    int size() { return count; }
+    int& at(int iter, Node* tmp, int t = 0)
+    {
+        if (tmp != nullptr)
+        {
+            if (t == iter)
+                return tmp->data;
+            tmp = tmp->next;
+            t++;
+            return at(iter, tmp, t);
+        }
+        else
+        {
+            int rt = -1;
+            return rt;
+        }
+    }
+};
+List create(int size, List output, int i)
+{
+    if (i < size)
+    {
+        output.push_back(rand() % 7);
+        return create(size, output, i + 1);
+    }
+    else
+        return output;
+}
+void print(List lst, int i)
+{
+    if (i < lst.size())
+    {
+        cout << lst.at(i, lst.gethead()) << "  ";
+        print(lst, i + 1);
+    }
+    else
+        cout << endl;
+}
+void rectask(List lst, List lst2, int i, int j, bool sum, int sum2)
+{
+    if (i < lst.size())
+    {
+        if (j < lst2.size())
+        {
+            if (lst.at(i, lst.gethead()) == lst2.at(j, lst2.gethead()))
+                return rectask(lst, lst2, i, j + 1, sum,sum2+1);
+            else
+                return rectask(lst, lst2, i, j + 1, sum,sum2);
+        }
+        else
+        {
+            if (sum2 == 0)
+                sum = false;
+            return rectask(lst, lst2, i + 1, 0, sum,0);
+        }
+    }
+    else
+    {
+        if (sum)
+            cout << "contains" << endl;
+        else
+            cout << "doesnt contain" << endl;
+    }
+}
+int main()
+{
+    srand(time(NULL));
+    int size = 0;
+    cout << "Size: "; cin >> size;
+    List list; list = create(size, list, 0);
+    cout << "========created list:========" << endl;
+    print(list, 0);
+    cout << "========created list2:========" << endl;
+    List list2; list2 = create(size, list2, 0);
+    print(list2, 0);
+    cout << "Task:" << endl;
+    rectask(list, list2, 0, 0, true,0);
+    system("pause");
+    return 0;
+}
