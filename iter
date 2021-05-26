@@ -1,0 +1,124 @@
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <iomanip>
+#include <fstream>
+using namespace std;
+struct Node
+{
+    Node* next;
+    Node* prev;
+    int data;
+    Node(int _data)
+    {
+        data = _data;
+    }
+    Node(int data, Node* pNext = nullptr, Node* pPrev = nullptr)
+    {
+        this->data = data;
+        this->next = pNext;
+        this->prev = pPrev;
+    }
+};
+struct List
+{
+private:
+    Node* head;
+    Node* tail;
+    int count;
+public:
+
+    List()
+    {
+        count = 0;
+        head = nullptr;
+        tail = nullptr;
+    }
+    void push_back(int data)
+    {
+        if (count > 1)
+        {
+            Node* temp = tail;
+            tail = new Node(data, nullptr, tail);
+            temp->next = tail;
+        }
+        else if (count == 1)
+        {
+            tail = new Node(data, nullptr, tail);
+            head->next = this->tail;
+        }
+        else
+        {
+            head = tail = new Node(data, head, tail);
+        }
+        count++;
+    }
+    int size()
+    {
+        return count;
+    }
+    int& operator[](int iter)
+    {
+        int t = 0;
+        Node* tmp = head;
+        while (tmp != nullptr)
+        {
+            if (t == iter)
+                return tmp->data;
+            tmp = tmp->next;
+            t++;
+        }
+    }
+
+};
+List create(int size)
+{
+    List output;
+    for (size_t i = 0; i < size; i++)
+        output.push_back(rand() % 10);
+    return output;
+}
+void print(List lst)
+{
+    for (size_t i = 0; i < lst.size(); i++)
+        cout << lst[i] << "  ";
+    cout << endl;
+}
+void task(List lst)
+{
+    List lst2; lst2 = create(lst.size());
+    cout << "list 2: " << endl;
+    print(lst2);
+    bool has = true;
+    int counter = 0;
+    for (int i = 0; i < lst.size(); i++)
+    {
+        int matches = 0;
+        for (size_t j = 0; j < lst2.size(); j++)
+        {
+            if (lst[i] == lst2[j])
+            {
+                matches++;
+            }
+        }
+        if (matches == 0) has = false;
+    }
+    if (has)
+        cout << "contains" << endl;
+    else
+        cout << "doesnt contain" << endl;
+}
+int main()
+{
+    srand(time(NULL));
+    int size = 0;
+    cout << "Size: "; cin >> size;
+    List list = create(size);
+    cout << "========created list:========" << endl;
+    print(list);
+    cout << "Task: " << endl;
+    task(list);
+
+    system("pause");
+    return 0;
+}
